@@ -5,6 +5,7 @@ Config is loaded from environment variables only — no flags, no config files.
 | variable                       | default   | description                                                                                                                                             |
 | ------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `BENCH_MCP_TIMEOUT`            | `15s`     | Timeout for `shell` commands                                                                                                                            |
+| `BENCH_MCP_SHELL_EXPAND_COMMANDS` | `true` | When true, `shell` parses leading `cd PATH &&` prefixes and splits unquoted `&&` chains into independent commands. Set to `false` to preserve normal Bash semantics. |
 | `BENCH_MCP_BACKGROUND_TIMEOUT` | `5m`      | Timeout for `shell_background` / `setup` jobs                                                                                                           |
 | `BENCH_MCP_TRANSPORT`          | _(unset)_ | HTTP wrapper: `mcpo` (OpenAI-compatible REST) or `mcp-proxy` (native MCP/SSE). `BENCH_MCP_HTTP=true` is equivalent to `mcpo` and remains supported.     |
 | `BENCH_MCP_HOME`               | `$HOME`   | Base directory for the path snapshot file and the persistent-install note. Override when running as a non-root user without access to the default home. |

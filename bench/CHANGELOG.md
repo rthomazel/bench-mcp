@@ -19,6 +19,20 @@
     - Em dash (—) separates the short label from the explanation.
 -->
 
+## [0.7.0](https://github.com/rthomazel/mcp/pull/46) feat: make shell command expansion configurable
+
+### feat
+
+- [`f29541d`](https://github.com/rthomazel/mcp/commit/f29541d) **(config, handlers/shell)** `BENCH_MCP_SHELL_EXPAND_COMMANDS` (default `true`) — makes `shell`'s leading `cd PATH &&` parsing and unquoted `&&` chain splitting optional. Set it to `false` to preserve normal Bash semantics, including `&&` short-circuiting and execution within a single shell invocation.
+
+### docs
+
+- [`f29541d`](https://github.com/rthomazel/mcp/commit/f29541d) **(config, main)** documents the new setting and updates the `shell` tool description.
+
+### test
+
+- [`f29541d`](https://github.com/rthomazel/mcp/commit/f29541d) **(internal/config_test.go)** adds coverage for the default and explicit configuration values.
+
 ## [0.6.4](https://github.com/rthomazel/mcp/pull/39) fix: pin mcp SDK below 2.0 in Docker image
 
 ### fix

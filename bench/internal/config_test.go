@@ -4,6 +4,31 @@ import (
 	"testing"
 )
 
+func TestLoadConfig_ShellExpandCommands(t *testing.T) {
+	for _, uc := range []struct {
+		name string
+		raw  string
+		want bool
+	}{
+		{name: "unset defaults enabled", want: true},
+		{name: "explicit true", raw: "true", want: true},
+		{name: "explicit false", raw: "false", want: false},
+	} {
+		t.Run(uc.name, func(t *testing.T) {
+			if uc.raw != "" {
+				t.Setenv("BENCH_MCP_SHELL_EXPAND_COMMANDS", uc.raw)
+			}
+			cfg, err := LoadConfig()
+			if err != nil {
+				t.Fatalf("LoadConfig() unexpected error: %v", err)
+			}
+			if cfg.ShellExpandCommands != uc.want {
+				t.Errorf("ShellExpandCommands = %v, want %v", cfg.ShellExpandCommands, uc.want)
+			}
+		})
+	}
+}
+
 func TestLoadConfig_ToolCallWorkers(t *testing.T) {
 	useCases := []struct {
 		name    string
