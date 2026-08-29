@@ -48,7 +48,10 @@ func (h *Handler) HandleShell(ctx context.Context, req mcp.CallToolRequest) (*mc
 		cwd = "/"
 	}
 
-	expanded := expandCommands(commands, cwd)
+	expanded := unchangedCommands(commands, cwd)
+	if h.cfg.ShellExpandCommands {
+		expanded = expandCommands(commands, cwd)
+	}
 	results := make([]*commandResult, len(expanded))
 
 	for i, ec := range expanded {
@@ -84,6 +87,14 @@ func (h *Handler) HandleShell(ctx context.Context, req mcp.CallToolRequest) (*mc
 
 	multi := len(results) > 1
 	return mcp.NewToolResultText(formatCommandResults(results, multi)), nil
+}
+
+func unchangedCommands(commands []string, cwd string) []expandedCmd {
+	out := make([]expandedCmd, 0, len(commands))
+	for _, cmd := range commands {
+		out = append(out, expandedCmd{cmd: cmd, cwd: cwd})
+	}
+	return out
 }
 
 // expandCommands pre-processes commands before execution. This is a behavioral change:

@@ -18,6 +18,7 @@ type Config struct {
 	EditMaxLines        int
 	MaxCandidates       int
 	ToolCallWorkers     int
+	ShellExpandCommands bool
 	StatsRedactPatterns []*regexp.Regexp
 }
 
@@ -34,7 +35,8 @@ var defaults = Config{
 	// restores deterministic ordering matching submission order. See
 	// BENCH_MCP_TOOL_CALL_WORKERS to opt into concurrent (out-of-order) processing for
 	// throughput on workloads with no cross-call ordering dependency.
-	ToolCallWorkers: 1,
+	ToolCallWorkers:     1,
+	ShellExpandCommands: true,
 }
 
 func LoadConfig() (*Config, error) {
@@ -53,13 +55,14 @@ func LoadConfig() (*Config, error) {
 	}
 
 	cfg := &Config{
-		Timeout:           defaults.Timeout,
-		BackgroundTimeout: defaults.BackgroundTimeout,
-		Home:              home,
-		MiseDir:           miseDir,
-		EditMaxLines:      defaults.EditMaxLines,
-		MaxCandidates:     defaults.MaxCandidates,
-		ToolCallWorkers:   defaults.ToolCallWorkers,
+		Timeout:             defaults.Timeout,
+		BackgroundTimeout:   defaults.BackgroundTimeout,
+		Home:                home,
+		MiseDir:             miseDir,
+		EditMaxLines:        defaults.EditMaxLines,
+		MaxCandidates:       defaults.MaxCandidates,
+		ToolCallWorkers:     defaults.ToolCallWorkers,
+		ShellExpandCommands: defaults.ShellExpandCommands,
 	}
 
 	if raw := os.Getenv("BENCH_MCP_TIMEOUT"); raw != "" {
@@ -92,6 +95,14 @@ func LoadConfig() (*Config, error) {
 			return nil, fmt.Errorf("BENCH_MCP_MAX_CANDIDATES invalid: must be a positive integer")
 		}
 		cfg.MaxCandidates = n
+	}
+
+	if raw := os.Getenv("BENCH_MCP_SHELL_EXPAND_COMMANDS"); raw != "" {
+		expand, err := strconv.ParseBool(raw)
+		if err != nil {
+			return nil, fmt.Errorf("BENCH_MCP_SHELL_EXPAND_COMMANDS invalid: %w", err)
+		}
+		cfg.ShellExpandCommands = expand
 	}
 
 	if raw := os.Getenv("BENCH_MCP_TOOL_CALL_WORKERS"); raw != "" {
