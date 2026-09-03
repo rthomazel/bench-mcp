@@ -86,7 +86,7 @@ func run() error {
 
 	s.AddTool(
 		mcp.NewTool("shell_background",
-			mcp.WithDescription("Execute one or more shell commands in the background. Returns a job_id per command immediately. Use status to poll for results. Times out after "+cfg.BackgroundTimeout.String()+"."),
+			mcp.WithDescription("Execute one or more shell commands in the background. Returns a job_id per command immediately. Use status to poll for results. Times out after "+cfg.BackgroundTimeout.String()+". Jobs are deprioritized (nice) so they do not starve foreground shell commands, but memory is still shared — a very large job can exhaust container memory."),
 			mcp.WithArray("commands", mcp.Required(), mcp.Description("Shell commands to execute."), mcp.Items(map[string]any{"type": "string"})),
 			mcp.WithString("cwd", mcp.Description("Working directory. Defaults to /")),
 		),
@@ -124,7 +124,7 @@ func run() error {
 
 	s.AddTool(
 		mcp.NewTool("file_replace",
-			mcp.WithDescription("Find and replace unique substrings in a file. Returns a unified diff."),
+			mcp.WithDescription("Find and replace unique substrings in a file. Returns a unified diff. If the file does not exist (or is empty) and exactly one replacement is given, the file is created with the contents of replace — find is ignored."),
 			mcp.WithString("path", mcp.Required(), mcp.Description("Absolute path to the file.")),
 			mcp.WithArray("replacements",
 				mcp.Required(),
