@@ -19,6 +19,7 @@ type Config struct {
 	MaxCandidates       int
 	ToolCallWorkers     int
 	ShellExpandCommands bool
+	BackgroundNice      int
 	StatsRedactPatterns []*regexp.Regexp
 }
 
@@ -37,6 +38,7 @@ var defaults = Config{
 	// throughput on workloads with no cross-call ordering dependency.
 	ToolCallWorkers:     1,
 	ShellExpandCommands: true,
+	BackgroundNice:      10,
 }
 
 func LoadConfig() (*Config, error) {
@@ -63,6 +65,7 @@ func LoadConfig() (*Config, error) {
 		MaxCandidates:       defaults.MaxCandidates,
 		ToolCallWorkers:     defaults.ToolCallWorkers,
 		ShellExpandCommands: defaults.ShellExpandCommands,
+		BackgroundNice:      defaults.BackgroundNice,
 	}
 
 	if raw := os.Getenv("BENCH_MCP_TIMEOUT"); raw != "" {
@@ -111,6 +114,14 @@ func LoadConfig() (*Config, error) {
 			return nil, fmt.Errorf("BENCH_MCP_TOOL_CALL_WORKERS invalid: must be a positive integer")
 		}
 		cfg.ToolCallWorkers = n
+	}
+
+	if raw := os.Getenv("BENCH_MCP_BACKGROUND_NICE"); raw != "" {
+		n, err := strconv.Atoi(raw)
+		if err != nil || n < 0 || n > 20 {
+			return nil, fmt.Errorf("BENCH_MCP_BACKGROUND_NICE invalid: must be an integer between 0 and 20")
+		}
+		cfg.BackgroundNice = n
 	}
 
 	if raw := os.Getenv("BENCH_MCP_STATS_REDACT_PATTERNS"); raw != "" {
