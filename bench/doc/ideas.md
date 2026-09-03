@@ -1,6 +1,8 @@
 # ideas
 
 - [ ] Go dependency update cron job workflow copy from other projects.
+- [ ] file_replace disregards find param, no validation, only if target file is empty or doesn't exist. then it creates the file with the contents of the replace param. A short message is displayed to the agent.
+- [ ] shell and shell background might be sharing workers, each should have 1 worker by default. Env vars for each worker's count. It's problematic to share workers because a background task is heavy and might block shell from working.
 
 ## concurrent context
 
